@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Function Points Estimator</title>
+
+    <style>
+      /* Apply a global font and reset default margin and padding */
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        /* background-image: url("/images/background_fp.jpeg"); */
+        background: rgb(238, 174, 202);
+        background: radial-gradient(
+          circle,
+          rgba(238, 174, 202, 1) 0%,
+          rgba(148, 187, 233, 1) 100%
+        );
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      #resultTable {
+        display: none;
+      }
+
+      .res {
+        font-family: Arial, sans-serif;
+
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      /* Style the header */
+      h1 {
+        text-align: center;
+        padding: 20px;
+        color: #fff;
+      }
+
+      /* Style the form container */
+      #estimatorForm {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Style form headings */
+      h2 {
+        margin-top: 20px;
+      }
+
+      /* Style input labels */
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      /* Style input fields */
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+      }
+
+      /* Style the Calculate button */
+      button {
+        display: block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+
+      /* Style the results section */
+      h2 {
+        margin-top: 40px;
+      }
+
+      /* Style result spans */
+      span {
+        font-weight: bold;
+        border-color: black;
+      }
+
+      /* Add some spacing between results */
+      p {
+        margin-bottom: 10px;
+      }
+
+      /* Style the result table */
+      #resultTable {
+        display: none;
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      /* Style table headers */
+      #resultTable th {
+        background-color: #f2f2f2;
+        padding: 10px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 1px solid #ddd;
+      }
+
+      /* Style table rows */
+      #resultTable td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+      }
+
+      #resultSection {
+        display: none;
+      }
+      /* Highlight alternate rows */
+      #resultTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      /* Style the results section */
+      .res {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      /* Style result headings */
+      .res h2 {
+        margin-top: 0;
+      }
+
+      /* Style result spans */
+      .res span {
+        font-weight: bold;
+      }
+
+      /* Add some spacing between results */
+      .res p {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Function Points Estimator</h1>
+    <form id="estimatorForm">
+      <h2><u>Inputs</u></h2>
+      <label for="inputopt">Optimistic:</label>
+      <input type="number" id="inputopt" name="inputopt" /><br />
+
+      <label for="inputml">Most Likely:</label>
+      <input type="number" id="inputml" name="inputml" /><br />
+
+      <label for="inputpess">Pessimistic:</label>
+      <input type="number" id="inputpess" name="inputpess" /><br />
+
+      <h2><u>Outputs</u></h2>
+      <label for="outopt">Optimistic:</label>
+      <input type="number" id="outopt" name="outopt" /><br />
+
+      <label for="outml">Most Likely:</label>
+      <input type="number" id="outml" name="outml" /><br />
+
+      <label for="outpess">Pessimistic:</label>
+      <input type="number" id="outpess" name="outpess" /><br />
+
+      <h2><u>Inquiries</u></h2>
+      <label for="inopt">Optimistic:</label>
+      <input type="number" id="inopt" name="inopt" /><br />
+
+      <label for="inml">Most Likely:</label>
+      <input type="number" id="inml" name="inml" /><br />
+
+      <label for="inpess">Pessimistic:</label>
+      <input type="number" id="inpess" name="inpess" /><br />
+
+      <h2><u>Logic Files</u></h2>
+      <label for="logopt">Optimistic:</label>
+      <input type="number" id="logopt" name="logopt" /><br />
+
+      <label for="logml">Most Likely:</label>
+      <input type="number" id="logml" name="logml" /><br />
+
+      <label for="logpess">Pessimistic:</label>
+      <input type="number" id="logpess" name="logpess" /><br />
+
+      <h2><u>Interfaces</u></h2>
+      <label for="faceopt">Optimistic:</label>
+      <input type="number" id="faceopt" name="faceopt" /><br />
+
+      <label for="faceml">Most Likely:</label>
+      <input type="number" id="faceml" name="faceml" /><br />
+
+      <label for="facepess">Pessimistic:</label>
+      <input type="number" id="facepess" name="facepess" /><br />
+
+      <h2><u>Weights</u></h2>
+      <label for="w1">Inputs:</label>
+      <input type="number" id="w1" name="w1" /><br />
+
+      <label for="w2">Outputs:</label>
+      <input type="number" id="w2" name="w2" /><br />
+
+      <label for="w3">Inquiries:</label>
+      <input type="number" id="w3" name="w3" /><br />
+
+      <label for="w4">Logic files:</label>
+      <input type="number" id="w4" name="w4" /><br />
+
+      <label for="w5">Interfaces:</label>
+      <input type="number" id="w5" name="w5" /><br />
+
+      <h2><u>Value Adjustment Factors (VAF)</u></h2>
+      <label for="notimp">Not Important - 0:</label>
+      <input type="number" id="notimp" name="notimp" /><br />
+
+      <label for="imp">Important - 1:</label>
+      <input type="number" id="imp" name="imp" /><br />
+
+      <label for="moreimp">More Important - 2:</label>
+      <input type="number" id="moreimp" name="moreimp" /><br />
+
+      <label for="need">Needed - 3:</label>
+      <input type="number" id="need" name="need" /><br />
+
+      <label for="essen">Essential - 4:</label>
+      <input type="number" id="essen" name="essen" /><br />
+
+      <label for="absessen">Absolutely Essential - 5:</label>
+      <input type="number" id="absessen" name="absessen" /><br />
+
+      <!-- Other VAF input fields -->
+
+      <h2><u>Productivity and Labor</u></h2>
+      <label for="prodrate">Productivity Rate:</label>
+      <input type="number" id="prodrate" name="prodrate" /><br />
+
+      <label for="laborbr">Labor Burdened Rate:</label>
+      <input type="number" id="laborbr" name="laborbr" /><br />
+
+      <button type="button" onclick="calculateEstimation()">Calculate</button>
+    </form>
+
+    <div class="res" id="resultSection">
+      <h2><u>Results</u></h2>
+
+      <table id="resultTable"></table>
+      <br />
+
+      <p>Total Function Points: <span id="totalFP"></span></p>
+      <p>
+        Function Points Estimated: <span id="functionPointsEstimated"></span>
+      </p>
+      <p>Effort: <span id="effort"></span> Person Months</p>
+      <p>Cost of Project: Rs <span id="cost"></span></p>
+    </div>
+
+    <script>
+      function calculateEstimation() {
+        // Retrieve values from the form
+
+        //OPT,ML,PESS VALUES
+        var inputopt = parseFloat(document.getElementById("inputopt").value); //20
+        var inputml = parseFloat(document.getElementById("inputml").value);
+        var inputpess = parseFloat(document.getElementById("inputpess").value);
+
+        var outopt = parseFloat(document.getElementById("outopt").value);
+        var outml = parseFloat(document.getElementById("outml").value);
+        var outpess = parseFloat(document.getElementById("outpess").value);
+
+        var inopt = parseFloat(document.getElementById("inopt").value);
+        var inml = parseFloat(document.getElementById("inml").value);
+        var inpess = parseFloat(document.getElementById("inpess").value);
+
+        var logopt = parseFloat(document.getElementById("logopt").value);
+        var logml = parseFloat(document.getElementById("logml").value);
+        var logpess = parseFloat(document.getElementById("logpess").value);
+
+        var faceopt = parseFloat(document.getElementById("faceopt").value);
+        var faceml = parseFloat(document.getElementById("faceml").value);
+        var facepess = parseFloat(document.getElementById("facepess").value);
+
+        //WEIGHTS
+        var w1 = parseInt(document.getElementById("w1").value);
+        var w2 = parseInt(document.getElementById("w2").value);
+        var w3 = parseInt(document.getElementById("w3").value);
+        var w4 = parseInt(document.getElementById("w4").value);
+        var w5 = parseInt(document.getElementById("w5").value);
+
+        //CALCULATING ESTIMATED COUNTS
+        var est_inp = Math.ceil((inputopt + 4 * inputml + inputpess) / 6);
+        var est_out = Math.ceil((outopt + 4 * outml + outpess) / 6);
+        var est_in = Math.ceil((inopt + 4 * inml + inpess) / 6);
+        var est_log = Math.ceil((logopt + 4 * logml + logpess) / 6);
+        var est_face = Math.ceil((faceopt + 4 * faceml + facepess) / 6);
+
+        //CALCULATING FP COUNT
+        var fp1 = Math.ceil(est_inp * w1);
+        var fp2 = Math.ceil(est_out * w2);
+        var fp3 = Math.ceil(est_in * w3);
+        var fp4 = Math.ceil(est_log * w4);
+        var fp5 = Math.ceil(est_face * w5);
+
+        //CALCULATING TOTAL FP
+        var totalFP = Math.ceil(fp1 + fp2 + fp3 + fp4 + fp5);
+
+        //VAF VALUES
+        var notimp = parseFloat(document.getElementById("notimp").value);
+        var imp = parseFloat(document.getElementById("imp").value);
+        var moreimp = parseFloat(document.getElementById("moreimp").value);
+        var need = parseFloat(document.getElementById("need").value);
+        var essen = parseFloat(document.getElementById("essen").value);
+        var absessen = parseFloat(document.getElementById("absessen").value);
+
+        //CALCULATING VAF FACTOR VALUE
+        var vaf =
+          0 * notimp +
+          1 * imp +
+          2 * moreimp +
+          3 * need +
+          4 * essen +
+          5 * absessen;
+
+        //ESTIMATED FP
+        var functionPointsEstimated = Math.ceil(totalFP * (0.65 + 0.01 * vaf));
+
+        //PRODUCTIVITY AND LABOR RATE
+        var prodrate = parseFloat(document.getElementById("prodrate").value);
+        var laborbr = parseFloat(document.getElementById("laborbr").value);
+
+        //CALCULATING EFFORT AND COST
+        var effort = Math.ceil(functionPointsEstimated / prodrate);
+        var cost = Math.ceil(effort * laborbr);
+
+        //TABLE
+        var resultTable = document.getElementById("resultTable");
+        resultTable.innerHTML = `
+        <tr>
+            <th>Factor</th>
+            <th>Optimistic</th>
+            <th>Most Likely</th>
+            <th>Pessimistic</th>
+            <th>Weights</th>
+            <th>Estimated count</th>
+            <th>FP count</th>
+        </tr>
+        <tr>
+            <td>External inputs</td>
+            <td>${inputopt}</td>
+            <td>${inputml}</td>
+            <td>${inputpess}</td>
+            <td>${w1}</td>
+            <td>${est_inp}</td>
+            <td>${fp1}</td>
+        </tr>
+        <tr>
+            <td>External outputs</td>
+            <td>${outopt}</td>
+            <td>${outml}</td>
+            <td>${outpess}</td>
+            <td>${w2}</td>
+            <td>${est_out}</td>
+            <td>${fp2}</td>
+        </tr>
+        <tr>
+            <td>External inquiries</td>
+            <td>${inopt}</td>
+            <td>${inml}</td>
+            <td>${inpess}</td>
+            <td>${w3}</td>
+            <td>${est_in}</td>
+            <td>${fp3}</td>
+        </tr>
+        <tr>
+            <td>Internal Logic files</td>
+            <td>${logopt}</td>
+            <td>${logml}</td>
+            <td>${logpess}</td>
+            <td>${w4}</td>
+            <td>${est_log}</td>
+            <td>${fp4}</td>
+        </tr>
+        <tr>
+            <td>External interfaces</td>
+            <td>${faceopt}</td>
+            <td>${faceml}</td>
+            <td>${facepess}</td>
+            <td>${w5}</td>
+            <td>${est_face}</td>
+            <td>${fp5}</td>
+        </tr>
+        <tr>
+            <td>Total FP count</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>${totalFP}</td>
+        </tr>
+        `;
+
+        resultTable.style.display = "table";
+        document.getElementById("resultSection").style.display = "block";
+
+        //RESULTS
+        document.getElementById("totalFP").textContent = totalFP;
+        document.getElementById("functionPointsEstimated").textContent =
+          functionPointsEstimated;
+        document.getElementById("effort").textContent = effort;
+        document.getElementById("cost").textContent = cost;
+      }
+    </script>
+  </body>
+</html>
